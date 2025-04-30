@@ -41,3 +41,8 @@ class RecipeDetailView(APIView):
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
     
+    def delete(self,request,pk):
+        recipe=self.get_object(pk)
+        recipe.delete()
+        return Response (status=204) 
+        
