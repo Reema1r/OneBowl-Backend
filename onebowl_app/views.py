@@ -2,12 +2,12 @@
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Recipe
-from .serializers import RecipeSerializer
+from .models import Recipe, Ingredient
+from .serializers import RecipeSerializer,IngredientSerializer
 
 from django.shortcuts import get_object_or_404
 
-# Create your views here.
+# Recipe views
 class RecipeListCreateView(APIView):
     def get(self, request):
         recipes = Recipe.objects.all()
@@ -46,3 +46,12 @@ class RecipeDetailView(APIView):
         recipe.delete()
         return Response (status=204) 
         
+        
+        
+# Ingredient views
+class IngredientListCreateView(APIView):
+    def get(self, request):
+        ingredients = Ingredient.objects.all()
+        serializer=IngredientSerializer(ingredients, many=True)
+        return Response(serializer.data, status=200)
+    
