@@ -88,3 +88,11 @@ class ShoppingListDetailView(APIView):
         serializer =ShoppingListSerializer(shopping_list)
         return Response(serializer.data, status=200)
     
+    def patch(self,request,pk):
+        shopping_list=self.get_object(pk)
+        serializer =ShoppingListSerializer(shopping_list, data = request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
