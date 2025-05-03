@@ -21,6 +21,12 @@ class Ingredient(models.Model):
         return self.name
     
     
+class ShoppingList(models.Model):
+    name=models.CharField(max_length=50)
+    ingredients_list=models.TextField() 
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    
+    
     
 
     
