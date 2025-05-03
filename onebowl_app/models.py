@@ -26,8 +26,8 @@ class ShoppingList(models.Model):
     ingredients_list=models.TextField() 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     
-    
-    
+    def __str__(self):
+        return self.name
 
     
     
