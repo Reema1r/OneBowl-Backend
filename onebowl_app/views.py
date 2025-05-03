@@ -63,11 +63,11 @@ class IngredientListCreateView(APIView):
             
         return Response(serializer.errors,status=400)
     
-
+# Shopping list views
 class ShoppingListCreateList(APIView):
     def get(self,request):
-        shoppingLists = ShoppingList.objects.all()
-        serializer=ShoppingListSerializer(shoppingLists, many=True)
+        shopping_lists = ShoppingList.objects.all()
+        serializer=ShoppingListSerializer(shopping_lists, many=True)
         return Response(serializer.data, status=200)
     
     def post(self,request):
@@ -77,4 +77,14 @@ class ShoppingListCreateList(APIView):
             return Response(serializer.data,status=201)
             
         return Response(serializer.errors,status=400)
+    
+    
+class ShoppingListDetailView(APIView):
+    def get_object(self,pk):
+        return get_object_or_404(ShoppingList,pk=pk)
+    
+    def get(self,request,pk):
+        shopping_list=self.get_object(pk) 
+        serializer =ShoppingListSerializer(shopping_list)
+        return Response(serializer.data, status=200)
     
