@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Recipe, Ingredient
+from .models import Recipe, Ingredient, ShoppingList
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -17,3 +17,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields=['id', 'name', 'description', 'instructions', 'img_url', 'ingredients']
         
         
+class ShoppingListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=ShoppingList
+        fields="__all__"
