@@ -63,6 +63,21 @@ class IngredientListCreateView(APIView):
             
         return Response(serializer.errors,status=400)
     
+    
+class IngredienDeleteView(APIView):
+    def get_object(self,pk):
+        return get_object_or_404(Ingredient,pk=pk)
+    
+    def get(self,request,pk):
+        ingredient=self.get_object(pk) 
+        serializer =IngredientSerializer(ingredient)
+        return Response(serializer.data, status=200)
+    
+    def delete(self,request,pk):
+        ingredient=self.get_object(pk)
+        ingredient.delete()
+        return Response (status=204) 
+    
 # Shopping list views
 class ShoppingListCreateList(APIView):
     def get(self,request):
