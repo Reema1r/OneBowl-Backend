@@ -96,3 +96,8 @@ class ShoppingListDetailView(APIView):
             serializer.save()
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
+    
+    def delete(self,request,pk):
+        shopping_list=self.get_object(pk)
+        shopping_list.delete()
+        return Response (status=204) 
