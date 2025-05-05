@@ -18,9 +18,12 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model=Recipe
         fields=['id', 'name', 'description', 'instructions', 'img_url', 'ingredients']
+        read_only_fields = ['id', 'owner']
         
-        
-        
+    def create(self, validated_data):
+        user = self.context['request'].user 
+        return Recipe.objects.create(owner=user, **validated_data)
+
 # Shopping List serializer  
 class ShoppingListSerializer(serializers.ModelSerializer):
     class Meta:

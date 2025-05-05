@@ -7,17 +7,25 @@ from .serializers import RecipeSerializer,IngredientSerializer, ShoppingListSeri
 from django.shortcuts import get_object_or_404
 
 
+from rest_framework.exceptions import PermissionDenied
+from django.contrib.auth.password_validation import validate_password
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.core.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
+
+
 # Recipe views
 class RecipeListCreateView(APIView):
+    permission_classes = [IsAuthenticated]  
     
     def get(self, request):
-        # recipes = Recipe.objects.all()
-        recipes = Recipe.objects.filter()
+        recipes = Recipe.objects.filter(owner=request.user)
         serializer=RecipeSerializer(recipes, many=True)
         return Response(serializer.data, status=200)
     
     def post(self,request):
-        serializer=RecipeSerializer(data=request.data)
+        serializer=RecipeSerializer(data=request.data,  context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=201)
@@ -25,17 +33,22 @@ class RecipeListCreateView(APIView):
         return Response(serializer.errors,status=400)
     
     
-class RecipeDetailView(APIView):    
-    def get_object(self,pk):
-        return get_object_or_404(Recipe,pk=pk)
-    
+class RecipeDetailView(APIView): 
+    permission_classes = [IsAuthenticated]  
+
+    def get_object(self,pk,user):
+        recipe= get_object_or_404(Recipe,pk=pk)
+        if recipe.owner != user:
+                raise PermissionDenied("Access denied. You are not allowed to access this recipe.")
+        return recipe
+        
     def get(self,request,pk):
-        recipe=self.get_object(pk) 
+        recipe=self.get_object(pk,request.user) 
         serializer =RecipeSerializer(recipe)
         return Response(serializer.data, status=200)
     
     def patch(self,request,pk):
-        recipe=self.get_object(pk)
+        recipe=self.get_object(pk,request.user)
         serializer =RecipeSerializer(recipe, data = request.data)
         
         if serializer.is_valid():
@@ -44,7 +57,7 @@ class RecipeDetailView(APIView):
         return Response(serializer.errors, status=400)
     
     def delete(self,request,pk):
-        recipe=self.get_object(pk)
+        recipe=self.get_object(pk,request.user)
         recipe.delete()
         return Response (status=204) 
         
@@ -52,6 +65,8 @@ class RecipeDetailView(APIView):
         
 # Ingredient views
 class IngredientListCreateView(APIView):
+    permission_classes = [IsAuthenticated]  
+
     def get(self, request):
         ingredients = Ingredient.objects.all()
         serializer=IngredientSerializer(ingredients, many=True)
@@ -67,6 +82,8 @@ class IngredientListCreateView(APIView):
     
     
 class IngredienDeleteView(APIView):
+    permission_classes = [IsAuthenticated]  
+
     def get_object(self,pk):
         return get_object_or_404(Ingredient,pk=pk)
     
@@ -82,13 +99,15 @@ class IngredienDeleteView(APIView):
     
 # Shopping list views
 class ShoppingListCreateList(APIView):
+    permission_classes = [IsAuthenticated]  
+
     def get(self,request):
-        shopping_lists = ShoppingList.objects.all()
+        shopping_lists = ShoppingList.objects.filter(owner=request.user)
         serializer=ShoppingListSerializer(shopping_lists, many=True)
         return Response(serializer.data, status=200)
     
     def post(self,request):
-        serializer=ShoppingListSerializer(data=request.data)
+        serializer=ShoppingListSerializer(data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=201)
@@ -97,16 +116,21 @@ class ShoppingListCreateList(APIView):
     
     
 class ShoppingListDetailView(APIView):
-    def get_object(self,pk):
-        return get_object_or_404(ShoppingList,pk=pk)
+    permission_classes = [IsAuthenticated]  
+
+    def get_object(self,pk,user):
+        shopping_list= get_object_or_404(ShoppingList,pk=pk)
+        if shopping_list.owner != user:
+            raise PermissionDenied("Access denied. You are not allowed to access this shopping list.")
+        return shopping_list
     
     def get(self,request,pk):
-        shopping_list=self.get_object(pk) 
+        shopping_list=self.get_object(pk,request.user) 
         serializer =ShoppingListSerializer(shopping_list)
         return Response(serializer.data, status=200)
     
     def patch(self,request,pk):
-        shopping_list=self.get_object(pk)
+        shopping_list=self.get_object(pk,request.user)
         serializer =ShoppingListSerializer(shopping_list, data = request.data)
         
         if serializer.is_valid():
@@ -115,6 +139,6 @@ class ShoppingListDetailView(APIView):
         return Response(serializer.errors, status=400)
     
     def delete(self,request,pk):
-        shopping_list=self.get_object(pk)
+        shopping_list=self.get_object(pk,request.user)
         shopping_list.delete()
         return Response (status=204) 
