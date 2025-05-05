@@ -142,3 +142,33 @@ class ShoppingListDetailView(APIView):
         shopping_list=self.get_object(pk,request.user)
         shopping_list.delete()
         return Response (status=204) 
+    
+# Sign up view
+class SignUpView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        username = request.data.get('username')
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        try:
+            validate_password(password)
+        except ValidationError as error:
+            return Response({'error': error.messages}, status=400)
+
+        # create user 
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        # create an access and refresh token
+        tokens = RefreshToken.for_user(user)
+        return Response(
+            {
+                'refresh': str(tokens),
+                'access': str(tokens.access_token)
+            },
+            status=201
+        )
