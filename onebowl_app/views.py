@@ -3,26 +3,16 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Recipe, Ingredient, ShoppingList
-from .serializers import RecipeSerializer,IngredientSerializer, ShoppingListSerializer, UserSerializer
+from .serializers import RecipeSerializer,IngredientSerializer, ShoppingListSerializer
 from django.shortcuts import get_object_or_404
-
-from django.contrib.auth.models import User
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
-
-
-# user view
-class CreateUserView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [AllowAny] # to allow any user (even the unauthenticated) to create a new user
-
 
 
 # Recipe views
 class RecipeListCreateView(APIView):
+    
     def get(self, request):
-        recipes = Recipe.objects.all()
+        # recipes = Recipe.objects.all()
+        recipes = Recipe.objects.filter()
         serializer=RecipeSerializer(recipes, many=True)
         return Response(serializer.data, status=200)
     
