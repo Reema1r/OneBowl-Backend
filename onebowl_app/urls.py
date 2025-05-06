@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import RecipeListCreateView,RecipeDetailView, IngredientListCreateView,ShoppingListCreateList, ShoppingListDetailView,IngredienDeleteView,SignUpView
-
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 

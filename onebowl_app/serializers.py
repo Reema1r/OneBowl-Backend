@@ -29,3 +29,8 @@ class ShoppingListSerializer(serializers.ModelSerializer):
     class Meta:
         model=ShoppingList
         fields="__all__"
+        read_only_fields = ['id', 'owner']
+
+    def create(self, validated_data):
+        user = self.context['request'].user 
+        return ShoppingList.objects.create(owner=user, **validated_data)
