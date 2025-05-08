@@ -11,6 +11,8 @@ This repository contains the backend code for the OneBowl app. It includes the D
 * Django REST Framework
 * PostgreSQL
 * Token Based Authentication (JWT)
+* Visual Studio Code
+
 
 ## Frontend Repository
 [OneBowl - Frontend Repo](https://git.generalassemb.ly/reema1radi/oneBowl-project-frontend)
