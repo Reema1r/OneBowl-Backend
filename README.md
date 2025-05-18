@@ -15,7 +15,7 @@ This repository contains the backend code for the OneBowl app. It includes the D
 
 
 ## Frontend Repository
-[OneBowl - Frontend Repo](https://git.generalassemb.ly/reema1radi/oneBowl-project-frontend)
+[OneBowl - Frontend Repo](https://github.com/Reema1r/OneBowl-Frontend)
 
 ## ERD diagram
 ![project ERD](OneBowl-ERD.png)
